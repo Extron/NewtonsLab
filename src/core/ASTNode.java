@@ -14,7 +14,7 @@ public abstract class ASTNode
 	/**
 	 * The name of the node.  This allows the nodes to be identifiable to the GUI.
 	 */
-	String name;
+	protected String name;
 	
 	
 	/**

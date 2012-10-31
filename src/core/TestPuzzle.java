@@ -2,33 +2,58 @@ package core;
 
 public final class TestPuzzle extends Puzzle
 {
-
+	/**
+	 * The particle of the test puzzle.
+	 */
+	Particle particle;
+	
+	/**
+	 * The impulse function of the particle.
+	 */
+	ASTNode impulse;
+	
+	
 	@Override
 	public void InitializePuzzle()
 	{
-		// TODO Auto-generated method stub
-
+		particle = new Particle(this);
 	}
 
+	@Override
+	public void ActivatePuzzle()
+	{
+		active = true;
+		
+		particle.SetMomentum(new Vector2(impulse.Solve(), 0));
+	}
+	
 	@Override
 	public void Tick(float dt)
 	{
-		// TODO Auto-generated method stub
-
+		if (active)
+			particle.Tick(dt);
 	}
 
 	@Override
-	public Boolean HasWon()
+	public void SetFunction(String parameter, ASTNode root)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (parameter == "impulse")
+			impulse = root;
+	}
+	
+	@Override
+	public boolean HasWon()
+	{
+		return false;
 	}
 
 	@Override
 	public double GetParameter(String parameter)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		if (parameter == "mass")
+			return particle.GetMass();
+		else 
+			return 0;
 	}
 
 }
