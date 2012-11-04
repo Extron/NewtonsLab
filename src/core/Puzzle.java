@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 /**
  * A puzzle contains a set of physics objects that can be manipulated through functions and parameters.
  * 
@@ -8,6 +10,13 @@ package core;
  */
 public abstract class Puzzle
 {
+	/**
+	 * A list of the elements in the puzzle.
+	 */
+	protected ArrayList<PuzzleElement> elements;
+	
+	
+
 	/**
 	 * The direction and magnitude of gravity for the puzzle.
 	 */
@@ -27,6 +36,16 @@ public abstract class Puzzle
 		gravity = new Vector2(0, -9.8);
 	}
 	
+	
+	/**
+	 * Gets the list of elements in the puzzle.
+	 * 
+	 * @return - Returns the element list.
+	 */
+	public ArrayList<PuzzleElement> GetElements()
+	{
+		return elements;
+	}
 	
 	/**
 	 * Gets the puzzle's gravity.

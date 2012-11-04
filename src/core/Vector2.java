@@ -100,12 +100,12 @@ public final class Vector2
 	/**
 	 * The x component of the vector.
 	 */
-	double x;
+	public double x;
 	
 	/**
 	 * The y component of the vector.
 	 */
-	double y;
+	public double y;
 	
 	
 	/**

@@ -6,7 +6,7 @@ package core;
  * @author Trystan Binkley-Jones
  *
  */
-public class Particle
+public class Particle implements PuzzleElement
 {
 	/**
 	 * The parent puzzle that this mass is a part of.
@@ -122,6 +122,7 @@ public class Particle
 	 * 
 	 * @param dt - The time step to advance by.
 	 */
+	@Override
 	public void Tick(double dt)
 	{
 		//For now, this uses an Euler DE solver, but for more accurate solutions,
