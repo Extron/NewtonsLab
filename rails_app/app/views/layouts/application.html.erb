@@ -1,14 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>RailsApp</title>
+  <title>Newton's Lab</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
-</head>
-<body>
 
-<%= yield %>
+<!-- Header 
+  <p>
+  <img src="images/logo.png" alt = "logo" width="150" height="228" align = "left">
+  <H1>Newton's Lab</H1>
+
+  </p>
+-->
+</head>
+
+    <div class="page-header">
+    <img src="images/logo.png" alt = "logo" width="150" height="228" align = "left">
+    <br>
+    <br>
+    <div style="padding-left: 160px;">
+    <font face="arial black, monaco, chicago" size=8>Newton's Lab</font> 
+    <h1><small>Subtext for header</small></h1>
+    </div> 
+
+    </div>
+
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2">
+      <!--Sidebar content-->5
+        <p>I'm the sidebar<p/>
+      </div>
+      <div class="span10">
+      <!--Body content-->
+
+      <%= yield %>
+
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

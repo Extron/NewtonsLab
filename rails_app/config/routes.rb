@@ -1,4 +1,10 @@
 RailsApp::Application.routes.draw do
+
+root :to => 'home#home_view'
+
+match "/projects/" => "projects#new"
+
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
