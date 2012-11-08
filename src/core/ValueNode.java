@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 /**
  * A node that stores a value.  This will always be a leaf in an AST.
  * 
@@ -26,6 +28,16 @@ public final class ValueNode extends ASTNode
 	public static ASTNode PiOverTwo()
 	{
 		return new ValueNode("\u03C0 / 2", Math.PI / 2);
+	}
+	
+	/**
+	 * Creates a constant node with the value set to pi / 4.
+	 * 
+	 * @return Returns a pi / 4 constant node.
+	 */
+	public static ASTNode PiOverFour()
+	{
+		return new ValueNode("\u03C0 / 4", Math.PI / 4);
 	}
 	
 	/**
@@ -82,7 +94,7 @@ public final class ValueNode extends ASTNode
 	 * 
 	 * @param value The value to store in the node.
 	 */
-	public ValueNode(float value)
+	public ValueNode(double value)
 	{
 		this("Constant", value);
 	}
@@ -96,6 +108,17 @@ public final class ValueNode extends ASTNode
 	}
 	
 	
+	/**
+	 * Gets the value stored in the node.
+	 * 
+	 * @return Returns the value in the node.
+	 */
+	public double GetValue()
+	{
+		return value;
+	}
+	
+	
 	@Override
 	/**
 	 * Returns the value stored at the current node.
@@ -103,5 +126,13 @@ public final class ValueNode extends ASTNode
 	public double Solve()
 	{
 		return value;
+	}
+	
+	@Override
+	public ArrayList<ASTNode> GetChildren()
+	{
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
+		
+		return children;
 	}
 }

@@ -2,6 +2,8 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import core.ASTNode;
@@ -56,6 +58,22 @@ public class ParticleTest
 		public boolean CanActivate()
 		{
 			return false;
+		}
+
+
+		@Override
+		public void ResetPuzzle()
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public ArrayList<String> GetValueParameters()
+		{
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

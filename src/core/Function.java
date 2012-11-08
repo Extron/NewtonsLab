@@ -26,7 +26,10 @@ public abstract class Function extends ASTNode
 		this.parameters = new ArrayList<ASTNode>(parameters.length);
 		
 		for (ASTNode parameter : parameters)
+		{
+			parameter.SetParent(this);
 			this.parameters.add(parameter);
+		}
 	}
 	
 	
@@ -45,6 +48,16 @@ public abstract class Function extends ASTNode
 		return Compute(values);
 	}
 	
+	@Override
+	public ArrayList<ASTNode> GetChildren()
+	{
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
+		
+		for (int i = 0; i < parameters.size(); i++)
+			children.add(parameters.get(i));
+		
+		return children;
+	}
 	
 	/**
 	 * Computes the value of the function using the values passed in as parameters.

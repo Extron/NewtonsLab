@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 /**
  * This is a blank filler node, allowing non-complete function node trees to remain "legal".
  * 
@@ -24,5 +26,13 @@ public final class NullNode extends ASTNode
 	public double Solve()
 	{
 		return 0;
+	}
+	
+	@Override
+	public ArrayList<ASTNode> GetChildren()
+	{
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
+		
+		return children;
 	}
 }

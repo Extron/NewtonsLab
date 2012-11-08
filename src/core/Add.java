@@ -15,8 +15,7 @@ public final class Add extends Operator
 	 */
 	public Add(ASTNode left, ASTNode right)
 	{
-		this.left = left;
-		this.right = right;
+		super(left, right);
 		
 		name = "Add";
 	}

@@ -15,8 +15,7 @@ public final class Subtract extends Operator
 	 */
 	public Subtract(ASTNode left, ASTNode right)
 	{
-		this.left = left;
-		this.right = right;
+		super(left, right);
 		
 		name = "Subtract";
 	}

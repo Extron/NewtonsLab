@@ -15,8 +15,7 @@ public final class Multiply extends Operator
 	 */
 	public Multiply(ASTNode left, ASTNode right)
 	{
-		this.left = left;
-		this.right = right;
+		super(left, right);
 		
 		name = "Multiply";
 	}

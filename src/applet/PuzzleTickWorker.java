@@ -45,7 +45,7 @@ public class PuzzleTickWorker extends SwingWorker<Void, Void>
 	{
 		Puzzle puzzle = component.GetPuzzle();
 		
-		while (!puzzle.HasWon())
+		while (!puzzle.HasWon() || isCancelled())
 		{
 			long start = System.nanoTime();
 			

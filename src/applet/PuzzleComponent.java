@@ -3,6 +3,8 @@ package applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,7 +22,7 @@ import core.Vector2;
  * @author Trystan Binkley-Jones
  *
  */
-public class PuzzleComponent extends JComponent implements MouseInputListener
+public class PuzzleComponent extends JComponent implements MouseInputListener, MouseWheelListener
 {
 	/**
 	 * A list of the objects in the puzzle to draw.
@@ -36,6 +38,11 @@ public class PuzzleComponent extends JComponent implements MouseInputListener
 	 * The current puzzle that is being drawn.
 	 */
 	Puzzle puzzle;
+	
+	/**
+	 * The thread worker that ticks the puzzle when it is activated.
+	 */
+	PuzzleTickWorker tick;
 	
 	/**
 	 * The scale of the viewport.
@@ -73,6 +80,7 @@ public class PuzzleComponent extends JComponent implements MouseInputListener
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addMouseWheelListener(this);
 	}
 	
 	
@@ -117,8 +125,8 @@ public class PuzzleComponent extends JComponent implements MouseInputListener
 		double dx = e.getX() - mX;
 		double dy = e.getY() - mY;
 		
-		viewport.x += dx;
-		viewport.y += dy;
+		viewport.x += dx / scale;
+		viewport.y += dy / scale;
 		
 		mX = e.getX();
 		mY = e.getY();
@@ -164,7 +172,17 @@ public class PuzzleComponent extends JComponent implements MouseInputListener
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+		if (e.getWheelRotation() < 0)
+			scale *= e.getScrollAmount() * 0.25;
+		else
+			scale /= e.getScrollAmount() * 0.25;
 	
+		repaint();
+	}
 	
 	/**
 	 * Gets the puzzle that the puzzle component is drawing.
@@ -185,9 +203,20 @@ public class PuzzleComponent extends JComponent implements MouseInputListener
 		{
 			puzzle.ActivatePuzzle();
 		
-			PuzzleTickWorker tick = new PuzzleTickWorker(this);
+			tick = new PuzzleTickWorker(this);
 			tick.execute();
 		}
+	}
+	
+	/**
+	 * Resets the puzzle, stopping it from ticking.
+	 */
+	public void ResetPuzzle()
+	{
+		tick.cancel(false);
+		puzzle.ResetPuzzle();
+		
+		repaint();
 	}
 	
 	/**

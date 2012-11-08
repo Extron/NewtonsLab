@@ -3,6 +3,7 @@ package applet;
 import java.awt.Graphics;
 
 import core.PuzzleElement;
+import core.Vector2;
 
 /**
  * This manages the graphical display of puzzle objects, like masses. As this is an abstract base class, 
@@ -43,5 +44,5 @@ public abstract class PuzzleObject
 	 * 
 	 * @param graphics - The graphics object to draw with.
 	 */
-	public abstract void Draw(Graphics graphics);
+	public abstract void Draw(Graphics graphics, Vector2 viewport, double scale);
 }

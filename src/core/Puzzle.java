@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A puzzle contains a set of physics objects that can be manipulated through functions and parameters.
@@ -15,8 +16,11 @@ public abstract class Puzzle
 	 */
 	protected ArrayList<PuzzleElement> elements;
 	
+	/**
+	 * A list of parameter functions that the puzzle has.
+	 */
+	protected HashMap<String, ASTNode> functions;
 	
-
 	/**
 	 * The direction and magnitude of gravity for the puzzle.
 	 */
@@ -33,7 +37,9 @@ public abstract class Puzzle
 	 */
 	public Puzzle()
 	{
-		gravity = new Vector2(0, -9.8);
+		gravity = new Vector2(0, 9.8);
+		elements = new ArrayList<PuzzleElement>();
+		functions = new HashMap<String, ASTNode>();
 	}
 	
 	
@@ -56,12 +62,50 @@ public abstract class Puzzle
 	{
 		return gravity;
 	}
+		
+	/**
+	 * Sets a function parameter in the puzzle to a specified function.
+	 * 
+	 * @param parameter - The parameter name to set.
+	 * @param root - The root of the function AST.
+	 */
+	public void SetFunction(String parameter, ASTNode root)
+	{
+		functions.put(parameter, root);
+	}
+
+	/**
+	 * Gets a function parameter in the puzzle.
+	 * 
+	 * @param parameter - The name of the parameter.
+	 * @return Returns the root of the function.
+	 */
+	public ASTNode GetFunction(String parameter)
+	{
+		return functions.get(parameter);
+	}
+	
+	/**
+	 * Gets a list of function parameters in the puzzle.
+	 * 
+	 * @return Returns the list of function parameters.
+	 */
+	public ArrayList<String> GetFunctionParameters()
+	{
+		return new ArrayList<String>(functions.keySet());
+	}
+
 	
 	
 	/**
 	 * Initializes the puzzle, setting up all objects and relations that need to be set up.
 	 */
 	public abstract void InitializePuzzle();
+	
+	/**
+	 * Resets the puzzle to its initial state.
+	 */
+	public abstract void ResetPuzzle();
 	
 	/**
 	 * Activates the puzzle, setting it to begin simulating.
@@ -73,16 +117,8 @@ public abstract class Puzzle
 	 * 
 	 * @param dt - The length of the time step.
 	 */
-	public abstract void Tick(float dt);
-	
-	/**
-	 * Sets a function parameter in the puzzle to a specified function.
-	 * 
-	 * @param parameter - The parameter name to set.
-	 * @param root - The root of the function AST.
-	 */
-	public abstract void SetFunction(String parameter, ASTNode root);
-	
+	public abstract void Tick(double dt);
+
 	/**
 	 * Determines if the puzzle is in a winning state.
 	 * 
@@ -91,10 +127,23 @@ public abstract class Puzzle
 	public abstract boolean HasWon();
 	
 	/**
+	 * Determines if the puzzle can currently be activated.
+	 * @return
+	 */
+	public abstract boolean CanActivate();
+	
+	/**
 	 * Gets the value of a parameter in the puzzle.
 	 * 
 	 * @param parameter - The name of the parameter to get.
 	 * @return Returns the value of the parameter.
 	 */
-	public abstract double GetParameter(String parameter);
+	public abstract double GetParameter(String parameter);	
+	
+	/**
+	 * Gets a list of function parameters in the puzzle.
+	 * 
+	 * @return Returns the list of function parameters.
+	 */
+	public abstract ArrayList<String> GetValueParameters();
 }

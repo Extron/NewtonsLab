@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 /**
  * This is an operator function node, and it manages a binary operation (plus, minus, add, subtract, power).
  * 
@@ -17,6 +19,22 @@ public abstract class Operator extends ASTNode
 	 * The right node in the operator.
 	 */
 	ASTNode right;
+	
+	
+	/**
+	 * Creates a new operator node.
+	 * 
+	 * @param left - The left operand.
+	 * @param right - The right operand.
+	 */
+	public Operator(ASTNode left, ASTNode right)
+	{
+		this.left = left;
+		this.right = right;
+		
+		this.left.SetParent(this);
+		this.right.SetParent(this);
+	}
 	
 	
 	@Override
@@ -37,4 +55,15 @@ public abstract class Operator extends ASTNode
 	 * @return Returns the result of the operation.
 	 */
 	protected abstract double Operate(double left, double right);
+	
+	@Override
+	public ArrayList<ASTNode> GetChildren()
+	{
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
+		
+		children.add(left);
+		children.add(right);
+		
+		return children;
+	}
 }

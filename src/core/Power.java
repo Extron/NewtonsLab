@@ -49,8 +49,7 @@ public final class Power extends Operator
 	 */
 	public Power(ASTNode left, ASTNode right)
 	{
-		this.left = left;
-		this.right = right;
+		super(left, right);
 		
 		name = "Power";
 	}

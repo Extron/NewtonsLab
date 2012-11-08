@@ -16,7 +16,7 @@ public class NewtonsLabApplet extends JApplet
 	 */
 	public void init()
 	{
-		setSize(500, 500);
+		setSize(800, 800);
 		
 		try 
 		{

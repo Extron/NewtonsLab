@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 public final class TestPuzzle extends Puzzle
 {
 	/**
@@ -17,28 +19,33 @@ public final class TestPuzzle extends Puzzle
 	public void InitializePuzzle()
 	{
 		particle = new Particle(this);
+		gravity.Scale(0);
+		
+		elements.add(particle);
+		impulse = new ValueNode(0.001);
+		SetFunction("impulse", impulse);
 	}
 
+	@Override
+	public void ResetPuzzle()
+	{
+		particle.SetPosition(new Vector2(0, 0));
+		particle.SetMomentum(new Vector2(0, 0));
+	}
+	
 	@Override
 	public void ActivatePuzzle()
 	{
 		active = true;
 		
-		particle.SetMomentum(new Vector2(impulse.Solve(), 0));
+		particle.SetMomentum(new Vector2(GetFunction("impulse").Solve(), 0));
 	}
 	
 	@Override
-	public void Tick(float dt)
+	public void Tick(double dt)
 	{
 		if (active)
 			particle.Tick(dt);
-	}
-
-	@Override
-	public void SetFunction(String parameter, ASTNode root)
-	{
-		if (parameter == "impulse")
-			impulse = root;
 	}
 	
 	@Override
@@ -48,6 +55,12 @@ public final class TestPuzzle extends Puzzle
 	}
 
 	@Override
+	public boolean CanActivate()
+	{
+		return impulse != null;
+	}
+	
+	@Override
 	public double GetParameter(String parameter)
 	{
 		if (parameter == "mass")
@@ -56,4 +69,12 @@ public final class TestPuzzle extends Puzzle
 			return 0;
 	}
 
+	@Override
+	public ArrayList<String> GetValueParameters()
+	{
+		ArrayList<String> list = new ArrayList<String>(1);
+		list.add("mass");
+		
+		return list;
+	}
 }

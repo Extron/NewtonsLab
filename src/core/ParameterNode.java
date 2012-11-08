@@ -1,5 +1,7 @@
 package core;
 
+import java.util.ArrayList;
+
 /**
  * This in likely going to be the most common node used in the AST.  This node stores a 
  * parameter identifier for a puzzle, and will look up the current value of the parameter
@@ -45,4 +47,11 @@ public final class ParameterNode extends ASTNode
 		return puzzle.GetParameter(parameter);
 	}
 
+	@Override
+	public ArrayList<ASTNode> GetChildren()
+	{
+		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
+		
+		return children;
+	}
 }

@@ -15,8 +15,7 @@ public final class Divide extends Operator
 	 */
 	public Divide(ASTNode left, ASTNode right)
 	{
-		this.left = left;
-		this.right = right;
+		super(left, right);
 		
 		name = "Divide";
 	}
