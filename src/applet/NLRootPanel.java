@@ -82,8 +82,9 @@ public class NLRootPanel extends JPanel implements ActionListener
 		reset.setActionCommand("reset");
 		reset.addActionListener(this);
 		
+		//builderPane.setVisible(false);
+		
 		add(title);
-		//add(puzzle);
 		add(mainPane);
 		add(activate);
 		add(reset);
