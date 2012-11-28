@@ -46,6 +46,27 @@ public abstract class Operator extends ASTNode
 		return Operate(left.Solve(), right.Solve());
 	}
 
+	/**
+	 * Sets the right node.
+	 * 
+	 * @param right - The node to set to.
+	 */
+	public void SetRightNode(ASTNode right)
+	{
+		this.right = right;
+		right.SetParent(this);
+	}
+	
+	/**
+	 * Sets the left node.
+	 * 
+	 * @param left - The node to set to.
+	 */
+	public void SetLeftNode(ASTNode left)
+	{
+		this.left = left;
+		left.SetParent(this);
+	}
 	
 	/**
 	 * Performs a binary operation on two values, which are obtained from recursively solving the left and
@@ -65,5 +86,20 @@ public abstract class Operator extends ASTNode
 		children.add(right);
 		
 		return children;
+	}
+	
+	@Override
+	public void ClearChild(ASTNode child)
+	{
+		if (left == child)
+		{
+			left.SetParent(null);
+			left = new NullNode();
+		}
+		else if (right == child)
+		{
+			right.SetParent(null);
+			right = new NullNode();
+		}
 	}
 }

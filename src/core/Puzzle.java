@@ -113,6 +113,11 @@ public abstract class Puzzle
 	public abstract void ActivatePuzzle();
 	
 	/**
+	 * Deactivates the puzzle, stopping the simulation.
+	 */
+	public abstract void DeactivatePuzzle();
+	
+	/**
 	 * Runs the puzzle for one time step.
 	 * 
 	 * @param dt - The length of the time step.
@@ -125,6 +130,13 @@ public abstract class Puzzle
 	 * @return Returns true if the puzzle has been won, false if not.
 	 */
 	public abstract boolean HasWon();
+	
+	/**
+	 * Determines if the puzzle has been failed.
+	 * 
+	 * @return Returns true if the puzzle has failed.
+	 */
+	public abstract boolean HasFailed();
 	
 	/**
 	 * Determines if the puzzle can currently be activated.

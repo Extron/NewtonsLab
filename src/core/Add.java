@@ -18,6 +18,7 @@ public final class Add extends Operator
 		super(left, right);
 		
 		name = "Add";
+		symbol = "+";
 	}
 	
 	/**

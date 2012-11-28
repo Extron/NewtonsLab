@@ -35,4 +35,9 @@ public final class NullNode extends ASTNode
 		
 		return children;
 	}
+	
+	@Override
+	public void ClearChild(ASTNode child)
+	{
+	}
 }

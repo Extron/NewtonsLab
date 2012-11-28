@@ -59,6 +59,15 @@ public abstract class Function extends ASTNode
 		return children;
 	}
 	
+	@Override
+	public void ClearChild(ASTNode child)
+	{
+		if (parameters.remove(child))
+		{
+			child.SetParent(null);
+		}
+	}
+	
 	/**
 	 * Computes the value of the function using the values passed in as parameters.
 	 * 

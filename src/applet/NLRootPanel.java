@@ -1,5 +1,6 @@
 package applet;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -45,6 +46,7 @@ public class NLRootPanel extends JPanel implements ActionListener
 	 */
 	JButton reset;
 	
+	JLabel failed;
 	
 	/**
 	 * This is the default constructor for the panel, and it is here where the GUI will be created.
@@ -60,10 +62,20 @@ public class NLRootPanel extends JPanel implements ActionListener
 		Puzzle test = new TestPuzzle();	
 		
 		JTree nodeTree = new JTree(BuildNodeTree(test));
+		nodeTree.setDragEnabled(true);
+		
+		failed = new JLabel("Puzzle Failed");
+		failed.setFont(new Font("Arial", Font.BOLD, 36));
+		failed.setForeground(Color.red);
+		failed.setVisible(false);
+		
 		JScrollPane nodeTreeView = new JScrollPane(nodeTree);
 		
 		puzzle = new PuzzleComponent(test);
-		astBuilder = new ASTBuilderComponent(test.GetFunction("impulse"));
+		puzzle.SetFailedListener(this);
+		
+		astBuilder = new ASTBuilderComponent(test, test.GetFunction("impulse"));
+		astBuilder.setTransferHandler(new ASTNodeTransferHandler());
 		
 		puzzle.setMinimumSize(new Dimension(500, 500));
 		astBuilder.setMinimumSize(new Dimension(300, 100));
@@ -101,6 +113,12 @@ public class NLRootPanel extends JPanel implements ActionListener
 		else if (e.getActionCommand() == "reset")
 		{
 			puzzle.ResetPuzzle();
+			activate.setEnabled(true);
+		}
+		else if (e.getActionCommand() == "failed")
+		{
+			puzzle.DeactivatePuzzle();
+			failed.setVisible(true);
 			activate.setEnabled(true);
 		}
 	}

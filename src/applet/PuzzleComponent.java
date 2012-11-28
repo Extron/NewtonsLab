@@ -2,6 +2,8 @@ package applet;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -24,6 +26,11 @@ import core.Vector2;
  */
 public class PuzzleComponent extends JComponent implements MouseInputListener, MouseWheelListener
 {
+	/**
+	 * The listener for teh puzzle failed event.
+	 */
+	ActionListener failedListener;
+	
 	/**
 	 * A list of the objects in the puzzle to draw.
 	 */
@@ -72,7 +79,7 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 		setSize(500, 500);
 		viewport = new Vector2(250, 250);
 		scale = 1;
-		dt = 1.0 / 16.0;
+		dt = 1.0 / 30.0;
 		
 		objects = new ArrayList<PuzzleObject>();
 		
@@ -184,6 +191,11 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 		repaint();
 	}
 	
+	public void SetFailedListener(ActionListener listener)
+	{
+		failedListener = listener;
+	}
+	
 	/**
 	 * Gets the puzzle that the puzzle component is drawing.
 	 * 
@@ -207,6 +219,18 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 			tick.execute();
 		}
 	}
+
+	/**
+	 * Deactivates the puzzle, setting it to begin simulating.
+	 */
+	public void DeactivatePuzzle()
+	{
+		puzzle.DeactivatePuzzle();
+	
+		tick.cancel(false);
+		
+		repaint();
+	}
 	
 	/**
 	 * Resets the puzzle, stopping it from ticking.
@@ -225,6 +249,9 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	public void TickPuzzle()
 	{
 		puzzle.Tick(dt);
+		
+		if (puzzle.HasFailed())
+			failedListener.actionPerformed(new ActionEvent(this, 0, "failed"));
 	}
 	
 	/**

@@ -1,6 +1,8 @@
 package applet;
 
 import core.ASTNode;
+import core.Function;
+import core.NullNode;
 import core.Operator;
 import core.ValueNode;
 
@@ -20,6 +22,10 @@ public class ASTObjectFactory
 			object = new OperatorObject((Operator) node);
 		else if (node instanceof ValueNode)
 			object = new ValueObject((ValueNode)node);
+		else if (node instanceof Function)
+			object = new FunctionObject((Function)node);
+		else if (node instanceof NullNode)
+			return null;
 		else
 			throw new IllegalArgumentException("The node is not an instance of a drawable AST node type.");
 		

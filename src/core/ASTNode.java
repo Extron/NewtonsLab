@@ -19,10 +19,25 @@ public abstract class ASTNode
 	protected String name;
 	
 	/**
+	 * The symbol used to represent the node.
+	 */
+	protected String symbol;
+	
+	/**
 	 * The parent node of this node.
 	 */
 	protected ASTNode parent;
 	
+	
+	/**
+	 * Clears the parent from this node.  This function ensures that the parent also clears out
+	 * the child.
+	 */
+	public void ClearParent()
+	{
+		if (parent != null)
+			parent.ClearChild(this);
+	}
 	
 	/**
 	 * Gets the name of the node.
@@ -57,11 +72,20 @@ public abstract class ASTNode
 	 * 
 	 * @param parent - The parent node to set.
 	 */
-	protected void SetParent(ASTNode parent)
+	public void SetParent(ASTNode parent)
 	{
 		this.parent = parent;
 	}
 
+	/**
+	 * Gets the symbol of the node.
+	 * @return Returns the node's symbol.
+	 */
+	public String GetSymbol()
+	{
+		return symbol;
+	}
+	
 	/**
 	 * Recursively solves the node.
 	 * @return Returns the computed value of the node.
@@ -75,6 +99,12 @@ public abstract class ASTNode
 	 */
 	public abstract ArrayList<ASTNode> GetChildren();
 	
+	/**
+	 * Clears the specified child from the tree.
+	 * 
+	 * @param child - The child to clear.
+	 */
+	public abstract void ClearChild(ASTNode child);
 	
 	@Override
 	public String toString()

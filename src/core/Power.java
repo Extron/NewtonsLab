@@ -52,6 +52,7 @@ public final class Power extends Operator
 		super(left, right);
 		
 		name = "Power";
+		symbol = "^";
 	}
 	
 	/**

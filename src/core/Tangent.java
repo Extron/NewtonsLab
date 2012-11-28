@@ -11,7 +11,8 @@ public class Tangent extends Function
 	{
 		super(node);
 		
-		name = "tan";
+		name = "Tangent";
+		symbol = "tan";
 	}
 	
 	/**
@@ -21,7 +22,8 @@ public class Tangent extends Function
 	{
 		super(new NullNode());
 		
-		name = "tan";
+		name = "Tangent";
+		symbol = "tan";
 	}
 	
 	

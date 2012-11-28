@@ -19,10 +19,10 @@ public final class TestPuzzle extends Puzzle
 	public void InitializePuzzle()
 	{
 		particle = new Particle(this);
-		gravity.Scale(0);
+		gravity.Scale(1e-7);
 		
 		elements.add(particle);
-		impulse = new ValueNode(0.001);
+		impulse = new ValueNode(0.01);
 		SetFunction("impulse", impulse);
 	}
 
@@ -38,7 +38,15 @@ public final class TestPuzzle extends Puzzle
 	{
 		active = true;
 		
-		particle.SetMomentum(new Vector2(GetFunction("impulse").Solve(), 0));
+		particle.SetMomentum(new Vector2(GetFunction("impulse").Solve(), -0.02));
+	}
+	
+	@Override
+	public void DeactivatePuzzle()
+	{
+		active = false;
+		
+		ResetPuzzle();
 	}
 	
 	@Override
@@ -54,6 +62,12 @@ public final class TestPuzzle extends Puzzle
 		return false;
 	}
 
+	@Override 
+	public boolean HasFailed()
+	{
+		return particle.position.y > 1000;
+	}
+	
 	@Override
 	public boolean CanActivate()
 	{

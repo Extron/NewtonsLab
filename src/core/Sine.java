@@ -17,7 +17,8 @@ public final class Sine extends Function
 	{
 		super(node);
 		
-		name = "sin";
+		name = "Sine";
+		symbol = "sin";
 	}
 	
 	/**
@@ -27,7 +28,8 @@ public final class Sine extends Function
 	{
 		super(new NullNode());
 		
-		name = "sin";
+		name = "Sine";
+		symbol = "sin";
 	}
 	
 	

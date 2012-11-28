@@ -87,6 +87,8 @@ public final class ValueNode extends ASTNode
 	{
 		this.name = name;
 		this.value = value;
+		
+		symbol = Double.toString(value);
 	}
 	
 	/**
@@ -134,5 +136,10 @@ public final class ValueNode extends ASTNode
 		ArrayList<ASTNode> children = new ArrayList<ASTNode>();
 		
 		return children;
+	}
+	
+	@Override
+	public void ClearChild(ASTNode child)
+	{
 	}
 }

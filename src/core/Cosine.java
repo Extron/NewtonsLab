@@ -11,7 +11,8 @@ public class Cosine extends Function
 	{
 		super(node);
 		
-		name = "cos";
+		name = "Cosine";
+		symbol = "cos";
 	}
 	
 	/**
@@ -21,7 +22,8 @@ public class Cosine extends Function
 	{
 		super(new NullNode());
 		
-		name = "cos";
+		name = "Cosine";
+		symbol = "cos";
 	}
 	
 	

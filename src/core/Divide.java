@@ -18,6 +18,7 @@ public final class Divide extends Operator
 		super(left, right);
 		
 		name = "Divide";
+		symbol = "/";
 	}
 	
 	/**

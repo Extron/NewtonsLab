@@ -18,6 +18,7 @@ public final class Subtract extends Operator
 		super(left, right);
 		
 		name = "Subtract";
+		symbol = "-";
 	}
 	
 	/**

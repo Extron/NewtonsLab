@@ -75,6 +75,22 @@ public class ParticleTest
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+
+		@Override
+		public boolean HasFailed()
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+
+		@Override
+		public void DeactivatePuzzle()
+		{
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	

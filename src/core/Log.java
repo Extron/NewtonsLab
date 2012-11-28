@@ -17,7 +17,8 @@ public final class Log extends Function
 	{
 		super(node);
 		
-		name = "ln";
+		name = "Natural Log";
+		symbol = "ln";
 	}
 	
 	/**
@@ -27,7 +28,8 @@ public final class Log extends Function
 	{
 		super(new NullNode());
 		
-		name = "ln";
+		name = "Natural Log";
+		symbol = "ln";
 	}
 	
 	

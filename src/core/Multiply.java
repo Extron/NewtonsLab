@@ -18,6 +18,7 @@ public final class Multiply extends Operator
 		super(left, right);
 		
 		name = "Multiply";
+		symbol = "*";
 	}
 	
 	/**

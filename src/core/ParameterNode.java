@@ -54,4 +54,9 @@ public final class ParameterNode extends ASTNode
 		
 		return children;
 	}
+	
+	@Override
+	public void ClearChild(ASTNode child)
+	{
+	}
 }
