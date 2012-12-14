@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+Lianne:
+  email: lianne.haug@colorado.edu
+  first_name: Lianne
+  last_name: Haug
+
+two:
+  email: Lianne
+  first_name: Lianne
+  last_name: Haug
+  teacher: false
+  about_me: poop
+  password_hash: MyString
+  password_salt: MyString

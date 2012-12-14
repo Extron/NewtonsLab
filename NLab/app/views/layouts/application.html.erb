@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Newtonls Lab</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+
+	<!-- header -->
+    <div class="page-header">
+    <img src="/images/logo.png" alt = "logo" width="150" height="228" align = "left">
+    <br>
+    <br>
+    <div style="padding-left: 160px;">
+    <font face="arial black, monaco, chicago" size=8>Newton's Lab</font> 
+    <h1><small>"No Great Discovery Was Ever Made Without A Bold Guess"</small></h1>
+    </div> 
+
+    </div>
+
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2">
+      <!--Sidebar content-->
+        <div class="well well-space">
+          <% if session[:user] %>
+            <i class="icon-bookmark"> </i>
+            <%= link_to "My Account", user_path(session[:user]) %>
+            <br>
+            <i class="icon-hand-left"> </i>
+            <%= link_to "Sign Out", log_out_path %>
+          <% else %>
+            <i class="icon-bookmark"> </i>
+            <%= link_to "Log-In", new_session_path %>
+          <% end %>
+          <br><br>
+          <i class="icon-home"> </i>
+          <%= link_to "Home", root_path %>
+          <br>
+          <% if session[:user] %>
+            <i class="icon-screenshot"> </i>
+            <%= link_to "All Puzzles", puzzles_path %>
+            <br>
+          <% end %>
+          <i class="icon-star"> </i>
+          <%= link_to "About", "/about" %>
+          <br>
+
+        
+
+        </div>
+      </div>
+      <div class="span10">
+      <!--Body content-->
+
+      <%= yield %>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+

@@ -1,0 +1,66 @@
+<h3 align = "left">Your Last Saved Score:<%= @record.score %></h3>
+<h4>Remeber to click the button "Save Scores" in order to save your progress</h4>
+<!--
+<script src="http://java.com/js/deployJava.js"></script>
+<script>
+    var attributes = {id: 'puzzle', codebase:'/applet',
+                      code:'applet/NewtonsLabApplet.class',
+                      archive:'NewtonsLab.jar',
+                      width:800, height:600} ;
+    var parameters = {pname:"Fucker", uname: "<%= @user.first_name%>", score: "<%= @record.score %>"} ;
+    var version = '1.6' ;
+    deployJava.runApplet(attributes, parameters, version);
+</script>
+-->
+
+
+
+
+<% if @puzzle.puzzle_type == 1 %>
+	<applet code="applet/NewtonsLabApplet" 
+		codebase="/applet"
+	    archive="NewtonsLab.jar"
+      	 id="puzzle"
+      	 MAYSCRIPT
+	    width="900" height="700">
+<param name = "pname" value = "<%= @puzzle.name %>">
+<param name = "uname" value = "<%= @user.first_name %>">
+<param name = "score" value = "<%= @record.score %>">
+	</applet>
+
+<% elsif @puzzle.puzzle_type == 2 %>
+	<h3>Sorry! This puzzle is coming</h3>
+<% else %>
+	<h3>
+		There was an error with your puzzle. 
+		Please contact the teacher to create a new one
+	</h3>
+<% end %>
+<!--
+<script language="javascript">
+	document.write("Before");
+	try
+  {
+  var x = puzzle.isFinished();
+  document.write(x);
+  }
+catch(err)
+  {
+  document.write(err);
+  }
+</script>
+-->
+
+<script language="javascript">
+function myFunction()
+{
+var score = puzzle.getScore();
+var link ="/score/"+<%=@puzzle.id%>+"/"+<%= @record.id%>+"/"+score;
+window.location = link;
+}
+</script>
+
+
+<body>
+<button onclick="myFunction()">Click Here to Save Score</button>
+</body>

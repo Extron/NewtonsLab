@@ -1,0 +1,27 @@
+
+<h1>Sign Up</h1>
+<% if @puzzle.errors.any? %>
+    <div class="error_messages">
+      <h2>Form is invalid</h2>
+      <ul>
+        <% for message in @puzzle.errors.full_messages %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<%= form_for @puzzle do |f| %>
+  <p>
+    Name:<br />
+    <%= f.text_field :name %>
+  </p>
+  Pick a Puzzle Type:
+  <br>
+  Cannon:
+  <%= radio_button_tag(:puzzle_type, "Cannon") %>
+  <br>
+  Car: 
+  <%= radio_button_tag(:puzzle_type, "Car") %>
+  <p class="button"><%= f.submit %></p>
+<% end %>

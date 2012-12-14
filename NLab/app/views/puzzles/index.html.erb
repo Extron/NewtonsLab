@@ -1,0 +1,31 @@
+<h1>Puzzles</h1>
+<br>
+
+<table class="table">
+<thead>
+	<tr>
+		<th>Puzzle Name</th>
+		<th>Teacher's Name</th>
+		<th>Teacher's Email</th>
+		<th>Date Created</th>
+	</tr>
+</thead>
+
+<tbody>
+	<% @puzzles.each do |puzzle| %>
+	<tr>
+		<% teacher = User.find(puzzle.user_id) %>
+		<td><%= link_to puzzle.name, puzzle_path(puzzle)%></td>
+		<td>
+			<%= teacher.first_name %>
+			<%= teacher.last_name %>
+		</td>
+		<td><%= teacher.email %></td>
+		<td><%= puzzle.created_at %></td>
+	</tr>
+	<% end %>
+</tbody>
+
+</table>
+
+

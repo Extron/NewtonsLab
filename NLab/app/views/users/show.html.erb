@@ -1,0 +1,97 @@
+<h1>Welcome <%= @user.first_name %></h1>
+<br>
+
+<% if @user.teacher %>
+  <%= link_to 'Create New Puzzle', new_puzzle_path, :class => "btn" %>
+  <br>
+<% end %>
+
+  <%= form_for @user do |f| %>
+  	<h4>About Me:</h4>
+
+<%= f.text_area :about_me, :size => "200x5"%><br />
+<p class="button"><%= f.submit "Update Your Profile" %></p>
+  <% end %>
+<!--
+  <h4>Puzzles:</h4>
+  <applet code="applet/NewtonsLabApplet.class" 
+        codebase="/applet"
+        archive="NewtonsLab.jar"
+        width="800" height="800">
+</applet>
+-->
+<!-- If you are a teacher, have the ability to create puzzle -->
+
+<h4>Played Puzzles: </h4>
+<% if @records == nil || @records.blank? %>
+  You don't have any puzzles yet. 
+  Click <%= link_to "HERE", puzzles_path%> to view them!
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Puzzle</th>
+        <th>Your Score</th>
+        <th>Teacher</th>
+        <th>Last Played</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @records.each do |record| %>
+        <tr>
+          <% puzzle = Puzzle.find(record.puzzle_id) %>
+          <% teacher = User.find(record.user_id) %>
+          <td><%= link_to puzzle.name, puzzle_path(puzzle) %></td>
+          <td><%= record.score %></td>
+          <td>
+            <%= teacher.first_name %>
+            <%= teacher.last_name %>
+          </td>
+          <td><%= record.updated_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %> 
+
+
+<!-- Teacher Options -->
+<% if @user.teacher %>
+  <br><br>
+  <h4>Puzzles You've Created:</h4>
+  <% if @user.puzzles.all == nil ||  @user.puzzles.all.blank? %>
+    You have not create any puzzles yet. 
+    Click <%= link_to "HERE", new_puzzle_path%> to create one!
+  <% else %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Puzzle</th>
+          <th>Date Created</th>
+          <th>Number of Players</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @user.puzzles.all.each do |puzzle| %>
+          <tr>
+            <th><%= puzzle.name%></th>
+            <th><%= puzzle.created_at %></th>
+            <th><%= puzzle.puzzle_records.all.count %></th>
+            <th>
+            <%= link_to "High Scores" , highscore_path(puzzle) %>
+            <br>
+            <%= link_to 'Delete', puzzle, method: :delete, data: { confirm: 'Are you sure?' } %>
+       
+            </th>
+
+          </tr> 
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% end %>
+
+

@@ -1,0 +1,27 @@
+<h1>High Scores For <%= @puzzle.name %></h1>
+<br>
+
+<table class="table">
+<thead>
+	<tr>
+		<th>Player</th>
+		<th>Score</th>
+		<th>Last Played</th>
+	</tr>
+</thead>
+
+<tbody>
+	<% @records.each do |record| %>
+	<tr>
+		<% user = User.find(record.user_id) %>
+		<td>
+			<%= user.first_name %>
+			<%= user.last_name %>
+		</td>
+		<td><%= record.score %></td>
+		<td><%= record.updated_at %></td>
+	</tr>
+	<% end %>
+</tbody>
+
+</table>

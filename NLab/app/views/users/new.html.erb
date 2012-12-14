@@ -1,0 +1,38 @@
+<h1>Sign Up</h1>
+<% if @user.errors.any? %>
+    <div class="error_messages">
+      <h2>Form is invalid</h2>
+      <ul>
+        <% for message in @user.errors.full_messages %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<%= form_for @user do |f| %>
+  <p>
+    Email:<br />
+    <%= f.text_field :email %>
+  </p>
+  <p>
+    First Name:<br />
+    <%= f.text_field :first_name %>
+  </p>
+  <p>
+    Last Name:<br />
+    <%= f.text_field :last_name %>
+  </p>
+  <p>
+    Password:<br />
+    <%= f.password_field :password %>
+  </p>
+  <p>
+    Confirm Password:<br />
+    <%= f.password_field :password_confirmation %>
+  </p>
+    I am a teacher!
+    <%= check_box_tag(:teacher, true) %>
+    <%= label_tag(:teacher) %>
+  <p class="button"><%= f.submit %></p>
+<% end %>
