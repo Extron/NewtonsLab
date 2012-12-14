@@ -27,6 +27,11 @@ public abstract class Puzzle
 	protected Vector2 gravity;
 	
 	/**
+	 * The file path and name of a background image for this puzzle.
+	 */
+	protected String backgroundImage;
+	
+	/**
 	 * Indicates whether the puzzle is currently simulating or not.
 	 */
 	protected boolean active;
@@ -158,4 +163,10 @@ public abstract class Puzzle
 	 * @return Returns the list of function parameters.
 	 */
 	public abstract ArrayList<String> GetValueParameters();
+
+
+	public String GetBackgroundImage()
+	{
+		return backgroundImage;
+	}
 }

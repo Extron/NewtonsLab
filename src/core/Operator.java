@@ -2,6 +2,8 @@ package core;
 
 import java.util.ArrayList;
 
+import core.Deliminator.DelimType;
+
 /**
  * This is an operator function node, and it manages a binary operation (plus, minus, add, subtract, power).
  * 
@@ -46,6 +48,20 @@ public abstract class Operator extends ASTNode
 		return Operate(left.Solve(), right.Solve());
 	}
 
+	@Override
+	/**
+	 * Flattens this node by first recursively flattening the left branch, then adding this node,
+	 * then recursively flattening the right branch.
+	 */
+	public void Flatten(ArrayList<ASTNode> list)
+	{
+		list.add(new Deliminator(DelimType.open));
+		left.Flatten(list);
+		list.add(this);
+		right.Flatten(list);
+		list.add(new Deliminator(DelimType.closed));
+	}
+	
 	/**
 	 * Sets the right node.
 	 * 

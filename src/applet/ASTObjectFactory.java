@@ -1,6 +1,7 @@
 package applet;
 
 import core.ASTNode;
+import core.Deliminator;
 import core.Function;
 import core.NullNode;
 import core.Operator;
@@ -24,6 +25,8 @@ public class ASTObjectFactory
 			object = new ValueObject((ValueNode)node);
 		else if (node instanceof Function)
 			object = new FunctionObject((Function)node);
+		else if (node instanceof Deliminator)
+			object = new DelimObject((Deliminator)node);
 		else if (node instanceof NullNode)
 			return null;
 		else

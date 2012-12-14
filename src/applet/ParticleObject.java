@@ -39,6 +39,6 @@ public class ParticleObject extends PuzzleObject
 		Vector2 pos = Vector2.Scale(Vector2.Add(((Particle)element).GetPosition(), viewport), scale);
 		
 		graphics.setColor(Color.red);
-		graphics.fillOval((int)pos.x, (int)pos.y, (int)(25 * scale), (int)(25 * scale));
+		graphics.fillOval((int)pos.x, (int)pos.y, (int)(100 * scale), (int)(100 * scale));
 	}
 }

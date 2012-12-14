@@ -11,12 +11,23 @@ import javax.swing.SwingUtilities;
  */
 public class NewtonsLabApplet extends JApplet
 {	
+	
+	int test = 5;
+	
+	NLRootPanel pane;
 	/**
 	 * This is called when the applet is loaded in a browser, and allows us to initialize the applet.
 	 */
 	public void init()
 	{
 		setSize(800, 800);
+		final String pname = getParameter("pname");
+		final String uname = getParameter("uname");
+		final String score = getParameter("score");
+		//final String pname = "Test Name";
+		//final String uname = "Test User";
+		//final String score = "0";
+		pane = new NLRootPanel(this, pname, uname, score);
 		
 		try 
 		{
@@ -27,7 +38,6 @@ public class NewtonsLabApplet extends JApplet
             SwingUtilities.invokeAndWait(new Runnable() 
             {
                 public void run() {
-                	NLRootPanel pane = new NLRootPanel();
                 	pane.setOpaque(true); 
                     setContentPane(pane); 
                 }
@@ -61,5 +71,13 @@ public class NewtonsLabApplet extends JApplet
 	public void destroy()
 	{
 		
+	}
+	
+	public boolean isFinished(){
+		return pane.GetFinished();
+	}
+	
+	public String getScore(){
+		return pane.getScore();
 	}
 }

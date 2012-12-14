@@ -120,6 +120,12 @@ public final class ValueNode extends ASTNode
 		return value;
 	}
 	
+	public void SetValue(double value)
+	{
+		this.value = value;
+		
+		symbol = Double.toString(value);
+	}
 	
 	@Override
 	/**
@@ -128,6 +134,15 @@ public final class ValueNode extends ASTNode
 	public double Solve()
 	{
 		return value;
+	}
+	
+	@Override
+	/**
+	 * Flattens this node by adding it to the list.
+	 */
+	public void Flatten(ArrayList<ASTNode> list)
+	{
+		list.add(this);
 	}
 	
 	@Override

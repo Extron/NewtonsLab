@@ -2,13 +2,99 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import core.*;
+import core.Deliminator.DelimType;
 
 public class ASTNodeTest
 {
 
+	class ASTTestPuzzle extends Puzzle
+	{
+		public ASTTestPuzzle()
+		{
+			gravity = new Vector2(0, 10);			
+		}
+		
+		
+		@Override
+		public void InitializePuzzle()
+		{			
+		}
+
+		@Override
+		public void ActivatePuzzle()
+		{
+		}
+
+		@Override
+		public void Tick(double dt)
+		{
+		}
+
+		@Override
+		public void SetFunction(String parameter, ASTNode root)
+		{
+		}
+
+		@Override
+		public boolean HasWon()
+		{
+			return false;
+		}
+
+		@Override
+		public double GetParameter(String parameter)
+		{
+			if (parameter == "test parameter")
+				return 10;
+			
+			return 0;
+		}
+
+		@Override
+		public boolean CanActivate()
+		{
+			return false;
+		}
+
+
+		@Override
+		public void ResetPuzzle()
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+
+		@Override
+		public ArrayList<String> GetValueParameters()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+		@Override
+		public boolean HasFailed()
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+
+		@Override
+		public void DeactivatePuzzle()
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	@Test
 	public void testSolve()
 	{
@@ -70,6 +156,232 @@ public class ASTNodeTest
 		
 		root = new Power(new ValueNode(-1), new ValueNode(0.5));
 		assertEquals(root.Solve(), Double.NaN, 0.00001);
+	}
+	
+	@Test
+	public void testBuildTree()
+	{
+		ArrayList<ASTNode> list = new ArrayList<ASTNode>();
+	
+		ASTTestPuzzle puzzle = new ASTTestPuzzle();
+		
+		//Test that building a simple tree works.
+		list.add(ValueNode.Pi());
+		list.add(new Add());
+		list.add(ValueNode.Pi());
+		
+		ASTNode tree = ASTNode.BuildTree(list);
+		
+		double solution = tree.Solve();
+		assertEquals(solution, 2 * Math.PI, 0.00001);
+		
+		
+		//Test that multiple operations are correctly handled.
+		list.clear();
+		
+		list.add(new ValueNode(5));
+		list.add(new Multiply());
+		list.add(new ValueNode(3));
+		list.add(new Add());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 17, 0.00001);
+		
+		
+		//Ensure order of operations is retained.
+		list.clear();
+		
+		list.add(new ValueNode(5));
+		list.add(new Add());
+		list.add(new ValueNode(3));
+		list.add(new Multiply());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 11, 0.00001);
+		
+		
+		//Ensure order of operations is retained, again.
+		list.clear();
+		
+		list.add(new ValueNode(5));
+		list.add(new Add());
+		list.add(new ValueNode(3));
+		list.add(new Multiply());
+		list.add(new ValueNode(2));
+		list.add(new Power());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 17, 0.00001);
+		
+		
+		//Test that putting deliminators in works correctly.
+		list.clear();
+		
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(5));
+		list.add(new Add());
+		list.add(new ValueNode(3));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Multiply());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 16, 0.00001);
+		
+		
+		//Test that functions work correctly.
+		list.clear();
+		
+		list.add(new Sine());
+		list.add(new Deliminator(DelimType.open));
+		list.add(ValueNode.PiOverTwo());
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 1, 0.00001);
+		
+
+		//Test that functions work correctly with operators outside the function.
+		list.clear();
+		
+		list.add(new Sine());
+		list.add(new Deliminator(DelimType.open));
+		list.add(ValueNode.PiOverTwo());
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Multiply());
+		list.add(new ValueNode(5));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 5, 0.00001);
+		
+		
+		//Test that functions work correctly with operators inside the function.
+		list.clear();
+		
+		list.add(new Sine());
+		list.add(new Deliminator(DelimType.open));
+		list.add(ValueNode.PiOverTwo());
+		list.add(new Multiply());
+		list.add(new ValueNode(5));
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, Math.sin(5 * Math.PI / 2), 0.00001);
+		
+		
+		//Test that functions work correctly with operators inside and outside the function.
+		list.clear();
+		
+		list.add(new Sine());
+		list.add(new Deliminator(DelimType.open));
+		list.add(ValueNode.PiOverTwo());
+		list.add(new Multiply());
+		list.add(new ValueNode(5));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Multiply());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, Math.sin(5 * Math.PI / 2) * 2, 0.00001);
+		
+		
+		//Test that parameter nodes work.
+		list.clear();
+		
+		list.add(new ParameterNode(puzzle, "test parameter"));
+		list.add(new Divide());
+		list.add(new ValueNode(2));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 5, 0.00001);
+		
+		
+		//Test that weird deliminators work.
+		list.clear();
+		
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(12));
+		list.add(new Divide());
+		list.add(new ValueNode(2));
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 6, 0.00001);
+		
+		list.clear();
+		
+		list.add(new Deliminator(DelimType.open));
+		list.add(new Deliminator(DelimType.open));
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(12));
+		list.add(new Divide());
+		list.add(new ValueNode(2));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 6, 0.00001);
+		
+		list.clear();
+		
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(12));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Divide());
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(2));
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 6, 0.00001);
+		
+		list.clear();
+		
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(12));
+		list.add(new Divide());
+		list.add(new ValueNode(2));
+		list.add(new Deliminator(DelimType.closed));
+		list.add(new Add());
+		list.add(new Deliminator(DelimType.open));
+		list.add(new ValueNode(16));
+		list.add(new Divide());
+		list.add(new ValueNode(2));
+		list.add(new Deliminator(DelimType.closed));
+		
+		tree = ASTNode.BuildTree(list);
+		
+		solution = tree.Solve();
+		assertEquals(solution, 14, 0.00001);
+		
 	}
 
 }

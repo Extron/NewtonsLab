@@ -19,7 +19,7 @@ public final class TestPuzzle extends Puzzle
 	public void InitializePuzzle()
 	{
 		particle = new Particle(this);
-		gravity.Scale(1e-7);
+		gravity.Scale(5e-8);
 		
 		elements.add(particle);
 		impulse = new ValueNode(0.01);

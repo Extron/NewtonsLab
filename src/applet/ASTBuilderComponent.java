@@ -3,14 +3,18 @@ package applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputListener;
 
 import core.*;
+import core.Deliminator.DelimType;
 
 /**
  * This component manages the function designer that players use to create parameters for the puzzles.
@@ -18,7 +22,7 @@ import core.*;
  * @author Trystan Binkley-Jones
  *
  */
-public class ASTBuilderComponent extends JComponent implements MouseInputListener
+public class ASTBuilderComponent extends JComponent implements MouseInputListener, ActionListener
 {
 	/**
 	 * A list of GUI objects to draw to represent the function.
@@ -38,6 +42,11 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	Puzzle puzzle;
 	
 	/**
+	 * The plugin that plugs the function into the puzzle.
+	 */
+	EqualsObject equals;
+	
+	/**
 	 * The root node of the AST function to draw and manipulate.
 	 */
 	ASTNode root;
@@ -53,6 +62,11 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	Vector2 selObjOffset;
 	
 	/**
+	 * The name of the function currently being edited.
+	 */
+	String functionName;
+	
+	/**
 	 * This determines the strength of the node object magnetism 
 	 */
 	float magnetPower;
@@ -63,14 +77,21 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	 * 
 	 * @param root - The root of the AST function to manipulate.
 	 */
-	public ASTBuilderComponent(Puzzle puzzle, ASTNode root)
+	public ASTBuilderComponent(Puzzle puzzle, String functionName)
 	{
 		this.puzzle = puzzle;
-		this.root = root;
+		this.functionName = functionName;
+		
+		root = puzzle.GetFunction(functionName);
 		
 		nodes = new ArrayList<ASTNodeObject>();
 		orphans = new ArrayList<ASTNode>();
+		equals = new EqualsObject();
 		magnetPower = 50;
+		
+		equals.position = new Vector2(0, 50);
+		
+		nodes.add(equals);
 		
 		setSize(500, 500);
 		
@@ -106,8 +127,40 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		if (e.getClickCount() == 2)
+		{
+			Iterator<ASTNodeObject> iter = nodes.iterator();
+			
+			while (iter.hasNext())
+			{
+				ASTNodeObject next = iter.next();
+				
+				if (next instanceof ValueObject)
+				{
+					if (next.MouseOver(e.getX(), e.getY()))
+					{
+						String valueStr = (String)JOptionPane.showInputDialog(this, "Enter a value:", "New Value", JOptionPane.PLAIN_MESSAGE, null, null, "0.0");
+						
+						try
+						{
+							double value = Double.parseDouble(valueStr);
+							
+							((ValueNode)next.node).SetValue(value);
+							
+							repaint();
+						}
+						catch (NumberFormatException exception)
+						{
+						}
+						finally
+						{
+						}
+						
+						break;
+					}
+				}
+			}
+		}
 	}
 
 
@@ -130,19 +183,6 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		Iterator<ASTNodeObject> iter = nodes.iterator();
-		
-		while (iter.hasNext())
-		{
-			ASTNodeObject next = iter.next();
-			
-			if (next.MouseOver(e.getX(), e.getY()))
-			{
-				selectedObj = next;
-				selObjOffset = Vector2.Subtract(selectedObj.position, new Vector2(e.getX(), e.getY()));
-				break;
-			}
-		}
 	}
 
 
@@ -156,145 +196,217 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
-		if (selectedObj != null)
-		{
-			//If we are a child, then we are forced to a position.  So if we have moved
-			//the mouse far enough away, break the connection.
-			if (selectedObj.node.GetParent() != null)
-			{
-				if (Vector2.Distance(new Vector2(e.getX() + selObjOffset.x, e.getY() + selObjOffset.y), selectedObj.position) > magnetPower)
-				{
-					selectedObj.node.ClearParent();
-					orphans.add(selectedObj.node);
-				}
-			}
-			
-			selectedObj.position.x = e.getX() + selObjOffset.x;
-			selectedObj.position.y = e.getY() + selObjOffset.y;
-			
-			if (selectedObj.node.GetParent() == null)
-			{
-				Iterator<ASTNodeObject> iter = nodes.iterator();
-				
-				while (iter.hasNext())
-				{
-					ASTNodeObject nodeObj = iter.next();
-					
-					if (nodeObj == selectedObj || selectedObj.node.GetChildren().contains(nodeObj.node))
-						continue;
-					
-					Iterator<ASTNodeObject.MagnetPoint> magIter = selectedObj.magnetPoints.iterator();
-					
-					while (magIter.hasNext())
-					{
-						ASTNodeObject.MagnetPoint iterMag = magIter.next();
-						
-						if (nodeObj.IsNearMagnet(iterMag, magnetPower))
-						{
-							ASTNodeObject.MagnetPoint magnet = nodeObj.GetMagnetPoint(iterMag);
-							
-							if (magnet != null)
-							{
-								selectedObj.SnapToMagnet(iterMag, magnet);
-								selectedObj.ConnectNode(nodeObj, iterMag);
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-			PositionTree();
-			repaint();
-		}
 	}
 
 
 	@Override
-	public void mouseMoved(MouseEvent arg0)
+	public void mouseMoved(MouseEvent e)
 	{
 		// TODO Auto-generated method stub
 	}
-	
-	public void DropNode(String nodeStr, Point point)
+
+	@Override
+	public void actionPerformed(ActionEvent e)
 	{
-		ASTNode node = null;
+		String command = e.getActionCommand();
+		ASTNode node;
 		ASTNodeObject nodeObj;
 		
-		if (nodeStr.contains("Add"))
+		// TODO Auto-generated method stub
+		if (command.contains("Add"))
 			node = new Add(new NullNode(), new NullNode());
-		else if (nodeStr.contains("Subtract"))
+		else if (command.contains("Subtract"))
 			node = new Subtract(new NullNode(), new NullNode());
-		else if (nodeStr.contains("Multiply"))
+		else if (command.contains("Multiply"))
 			node = new Multiply(new NullNode(), new NullNode());
-		else if (nodeStr.contains("Divide"))
+		else if (command.contains("Divide"))
 			node = new Divide(new NullNode(), new NullNode());
-		else if (nodeStr.contains("Power"))
+		else if (command.contains("Power"))
 			node = new Power(new NullNode(), new NullNode());
-		else if (nodeStr.contains("Square"))
+		else if (command.contains("Square"))
 			node = Power.Square(new NullNode());
-		else if (nodeStr.contains("Cube"))
+		else if (command.contains("Cube"))
 			node = Power.Cube(new NullNode());
-		else if (nodeStr.contains("Sine"))
+		else if (command.contains("Sine"))
 			node = new Sine(new NullNode());
-		else if (nodeStr.contains("Cosine"))
+		else if (command.contains("Cosine"))
 			node = new Cosine(new NullNode());
-		else if (nodeStr.contains("Tangent"))
+		else if (command.contains("Tangent"))
 			node = new Tangent(new NullNode());
-		else if (nodeStr.contains("Narutal Log"))
+		else if (command.contains("Narutal Log"))
 			node = new Log(new NullNode());
-		else if (nodeStr.contains("Custom"))
+		else if (command.contains("Custom"))
 			node = new ValueNode();
-		else if (nodeStr.contains("\u03C0"))
-			node = ValueNode.Pi();
-		else if (nodeStr.contains("\u03C0 / 2"))
-			node = ValueNode.PiOverTwo();
-		else if (nodeStr.contains("\u03C0 / 4"))
+		else if (command.contains("Pi/4"))
 			node = ValueNode.PiOverFour();
-		else if (nodeStr.contains("2\u03C0"))
+		else if (command.contains("Pi/2"))
+			node = ValueNode.PiOverTwo();
+		else if (command.contains("2Pi"))
 			node = ValueNode.TwoPi();
-		else if (nodeStr.contains("e") && nodeStr.length() == 1)
+		else if (command.contains("Pi"))
+			node = ValueNode.Pi();
+		else if (command.contains("e") && command.length() == 1)
 			node = ValueNode.e();
-		else if (nodeStr.contains("g") && nodeStr.length() == 1)
+		else if (command.contains("g") && command.length() == 1)
 			node = ValueNode.g();
-		else
-			node = new ParameterNode(puzzle, nodeStr);
-		
-		if (node == null)
+		else if (command.contains("Open Deliminator"))
+			node = new Deliminator(DelimType.open);
+		else if (command.contains("Close Deliminator"))
+			node = new Deliminator(DelimType.closed);
+		else if (command.contains("Remove"))
+		{
+			if (nodes.size() > 1)
+			{
+				nodes.remove(nodes.size() - 1);
+				repaint();
+			}
+			
 			return;
+		}
+		else
+			node = new ParameterNode(puzzle, command);
+		
+		ASTNodeObject lastNode = null;
+		
+		if (nodes.size() > 0)
+			lastNode = nodes.get(nodes.size() - 1);
+		
+		if (node instanceof Operator)
+		{
 			
-		orphans.add(node);
-			
+			if (!(lastNode.node instanceof ValueNode) && !(lastNode.node instanceof ParameterNode))
+			{
+				if (lastNode.node instanceof Deliminator)
+				{
+					if (((Deliminator)lastNode.node).GetType() != DelimType.closed)
+						return;
+				}
+				else
+				{
+					return;
+				}
+			}
+		}
+		else if (node instanceof ValueNode || node instanceof ParameterNode)
+		{
+			if (!(lastNode.node instanceof Operator) && !(lastNode.node instanceof Function) && !(lastNode instanceof EqualsObject))
+			{
+				if (lastNode.node instanceof Deliminator)
+				{
+					if (((Deliminator)lastNode.node).GetType() != DelimType.open)
+						return;
+				}
+				else
+				{
+					return;
+				}
+			}
+		}
+		else if (node instanceof Function)
+		{
+			if (!(lastNode.node instanceof Operator) && !(lastNode.node instanceof Function) && !(lastNode instanceof EqualsObject))
+			{
+				if (lastNode.node instanceof Deliminator)
+				{
+					if (((Deliminator)lastNode.node).GetType() != DelimType.open)
+						return;
+				}
+				else
+				{
+					return;
+				}
+			}
+		}
+		else if (node instanceof Deliminator)
+		{
+			if (((Deliminator)node).GetType() == DelimType.open)
+			{
+				if (!(lastNode.node instanceof Operator) && !(lastNode.node instanceof Function) && !(lastNode instanceof EqualsObject))
+					return;
+			}
+			else
+			{
+				if (!(lastNode.node instanceof ValueNode) && !(lastNode.node instanceof ParameterNode))
+					return;
+				
+				int count = 0;
+				
+				for (int i = nodes.size() - 1; i >= 0; i--)
+				{
+					if (nodes.get(i) instanceof DelimObject)
+					{
+						if (((Deliminator)nodes.get(i).node).GetType() == DelimType.open)
+							count += 1;
+						else
+							count -= 1;
+					}
+				}
+				
+				if (count <= 0)
+					return;
+			}
+		}
+				
 		nodeObj = ASTObjectFactory.CreateASTObject(node);
-		nodeObj.position = new Vector2(point.x, point.y);
+		
+		double x = lastNode.GetPosition().x + lastNode.GetSize().width;
+		double y = lastNode.GetPosition().y + 0.5 * (lastNode.GetSize().height - nodeObj.GetSize().height);
+		nodeObj.position = new Vector2(x, y);
 		
 		nodes.add(nodeObj);
 		
-		Iterator<ASTNode> iter = node.GetChildren().iterator();
-		
-		while (iter.hasNext())
-			InitNode(iter.next());
-		
-		PositionTree();
 		repaint();
 	}
-
 	
 	/**
 	 * Sets the current AST function.
 	 * 
-	 * @param root - The root (does not have to be the root, since the root will be found) of the function.
+	 * @param name - The name of the function.
 	 */
-	public void SetAST(ASTNode root)
+	public void SetAST(String name)
 	{
-		ASTNode node = root;
+		this.functionName = name;
+		
+		ASTNode node = puzzle.GetFunction(name);
 		
 		while (node.GetParent() != null)
 			node = node.GetParent();
 		
 		this.root = node;
 		
+		nodes.clear();
+		nodes.add(equals);
+		
 		InitNode(this.root);
+	}
+	
+	/**
+	 * Gets the name of the function being edited.
+	 * 
+	 * @return Returns the function's name.
+	 */
+	public String GetFunctionName()
+	{
+		return functionName;
+	}
+	
+	/**
+	 * Gets the current AST node.
+	 * 
+	 * @return Returns the root of the AST.
+	 */
+	public ASTNode GetAST()
+	{
+		ArrayList<ASTNode> nodeList = new ArrayList<ASTNode>(nodes.size());
+		
+		Iterator<ASTNodeObject> iter = nodes.iterator();
+		
+		while (iter.hasNext())
+			nodeList.add(iter.next().node);
+		
+		ASTNode root = ASTNode.BuildTree(nodeList);
+		
+		return root;
 	}
 	
 	public ASTNodeObject GetNodeObject(ASTNode node)
@@ -323,63 +435,21 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 	private void InitNode(ASTNode node)
 	{
 		if (node != null && !(node instanceof NullNode))
-			nodes.add(ASTObjectFactory.CreateASTObject(node));
-		
-		Iterator<ASTNode> iter = node.GetChildren().iterator();
-		
-		while (iter.hasNext())
-			InitNode(iter.next());
-	}	
-	
-	private void PositionTree()
-	{
-		ASTNodeObject rootObj = GetNodeObject(root);
-		
-		if (rootObj != null)
-			PositionNodeObject(rootObj);
-		
-		Iterator<ASTNode> iter = orphans.iterator();
-		
-		while (iter.hasNext())
 		{
-			ASTNodeObject nodeObj = GetNodeObject(iter.next());
+			ArrayList<ASTNode> flattenedTree = new ArrayList<ASTNode>();
 			
-			if (nodeObj != null)
-				PositionNodeObject(nodeObj);
-		}
-	}
-	
-	private void PositionNodeObject(ASTNodeObject nodeObj)
-	{			
-		Iterator<ASTNode> iter = nodeObj.node.GetChildren().iterator();
+			node.Flatten(flattenedTree);
 			
-		while (iter.hasNext())
-		{
-			ASTNode child = iter.next();
-			ASTNodeObject childObj = GetNodeObject(child);
-			
-			if (childObj != null)
+			for (ASTNode n : flattenedTree)
 			{
-				ForceChildPosition(nodeObj, childObj);
-				PositionNodeObject(childObj);
-			}
-		}
-	}
-	
-	private void ForceChildPosition(ASTNodeObject parent, ASTNodeObject child)
-	{
-		if (parent instanceof OperatorObject)
-		{
-			//The child is the left node of the operator.
-			if (parent.node.GetChildren().get(0) == child.node)
-			{
-				child.position.x = parent.position.x - child.size.width;
-				child.position.y = parent.position.y + parent.size.height / 2.0 - child.size.height / 2.0;
-			}
-			else
-			{
-				child.position.x = parent.position.x + parent.size.width;
-				child.position.y = parent.position.y + parent.size.height / 2.0 - child.size.height / 2.0;
+				ASTNodeObject nodeObj = ASTObjectFactory.CreateASTObject(n);			
+				ASTNodeObject lastNode = nodes.get(nodes.size() - 1);
+				
+				double x = lastNode.GetPosition().x + lastNode.GetSize().width;
+				double y = lastNode.GetPosition().y + 0.5 * (lastNode.GetSize().height - nodeObj.GetSize().height);
+				
+				nodeObj.position = new Vector2(x, y);
+				nodes.add(nodeObj);
 			}
 		}
 	}

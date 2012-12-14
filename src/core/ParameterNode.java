@@ -48,6 +48,15 @@ public final class ParameterNode extends ASTNode
 	}
 
 	@Override
+	/**
+	 * Flattens this node by adding it to the list.
+	 */
+	public void Flatten(ArrayList<ASTNode> list)
+	{
+		list.add(this);
+	}
+	
+	@Override
 	public ArrayList<ASTNode> GetChildren()
 	{
 		ArrayList<ASTNode> children = new ArrayList<ASTNode>();

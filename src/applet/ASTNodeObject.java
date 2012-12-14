@@ -25,7 +25,9 @@ public abstract class ASTNodeObject
 	 */
 	class MagnetPoint
 	{
+		MagnetPoint connector;
 		Vector2 pos;
+		boolean filled;
 		int channel;
 		
 		public MagnetPoint(Vector2 position, int channel)
@@ -53,6 +55,13 @@ public abstract class ASTNodeObject
 	 * A list of magnet points that various nodes can be attached to.
 	 */
 	protected ArrayList<MagnetPoint> magnetPoints;
+	
+	/**
+	 * A list of child node objects.  This is for convenience mostly, so that we do
+	 * not have to iterate across a list of ASTNodeObjects to find the children 
+	 * of <code>node</code>.
+	 */
+	protected ArrayList<ASTNodeObject> children;
 	
 	/**
 	 * The node to draw.
@@ -105,7 +114,34 @@ public abstract class ASTNodeObject
 	public void SnapToMagnet(MagnetPoint source, MagnetPoint destination)
 	{
 		if (magnetPoints.contains(source))
+		{
 			position = Vector2.Subtract(destination.GetWorldPos(), source.pos);
+			source.filled = destination.filled = true;
+			source.connector = destination;
+			destination.connector = source;
+		}
+	}
+
+	/**
+	 * Re-opens all magnets within this AST Node object.
+	 */
+	public void ClearMagnets()
+	{
+		Iterator<MagnetPoint> iter = magnetPoints.iterator();
+		
+		while (iter.hasNext())
+		{
+			MagnetPoint iterMag = iter.next();
+			iterMag.filled = false;
+			
+			if (iterMag.connector != null)
+			{
+				iterMag.connector.filled = false;
+				iterMag.connector.connector = null;
+			}
+			
+			iterMag.connector = null;
+		}
 	}
 	
 	/**
@@ -123,8 +159,9 @@ public abstract class ASTNodeObject
 		{
 			MagnetPoint iterMag = iter.next();
 			
-			if (magnet.Distance(this, iterMag) < magnet.Distance(this, currMag) &&
-				magnet.channel == -iterMag.channel)
+			if (magnet.Distance(this, iterMag) <= magnet.Distance(this, currMag) &&
+				magnet.channel == -iterMag.channel && 
+			    (!magnet.filled && !iterMag.filled))
 				currMag = iterMag;
 		}
 		
@@ -149,7 +186,8 @@ public abstract class ASTNodeObject
 			MagnetPoint iterMag = iter.next();
 			
 			if (magnet.Distance(this, iterMag) < magnetPower &&
-			    magnet.channel == -iterMag.channel)
+			    magnet.channel == -iterMag.channel && 
+			    (!magnet.filled && !iterMag.filled))
 				return true;
 		}
 		
@@ -160,5 +198,26 @@ public abstract class ASTNodeObject
 	{
 		return x > position.x && x < position.x + size.width &&
 			   y > position.y && y < position.y + size.height;
+	}
+
+
+	/**
+	 * Gets the position of the node object.
+	 * 
+	 * @return Return's the node object's position.
+	 */
+	public Vector2 GetPosition()
+	{
+		return position;
+	}
+
+	/**
+	 * Gets the size of the node object.
+	 * 
+	 * @return Returns the size.
+	 */
+	public Dimension GetSize()
+	{
+		return size;
 	}
 }

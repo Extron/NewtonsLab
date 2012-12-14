@@ -1,15 +1,21 @@
 package applet;
 
+import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
 
@@ -35,6 +41,11 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	 * A list of the objects in the puzzle to draw.
 	 */
 	ArrayList<PuzzleObject> objects;
+	
+	/**
+	 * The background image for the puzzle.
+	 */
+	Image background;
 	
 	/**
 	 * This is the location of the center of the viewport of this component.
@@ -72,9 +83,13 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	 * 
 	 * @param puzzle - The current puzzle to display.
 	 */
-	public PuzzleComponent(Puzzle puzzle)
+	public PuzzleComponent(Applet applet, Puzzle puzzle)
 	{
 		this.puzzle = puzzle;
+		
+		String dir = System.getProperty("user.dir");
+		
+		background = applet.getImage(applet.getCodeBase(), puzzle.GetBackgroundImage());
 		
 		setSize(500, 500);
 		viewport = new Vector2(250, 250);
@@ -105,9 +120,11 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 		int w = getWidth() - getInsets().left - getInsets().right;
 		int h = getHeight() - getInsets().top - getInsets().bottom;
 		
+		
 		g.setColor(Color.white);
 		
 		g.fillRect(x, y, w, h);
+		//g.drawImage(background, x, y, null);
 		
 		//Draw all of the puzzle objects.
 		Iterator<PuzzleObject> iter = objects.iterator();

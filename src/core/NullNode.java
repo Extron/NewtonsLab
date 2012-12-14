@@ -28,6 +28,11 @@ public final class NullNode extends ASTNode
 		return 0;
 	}
 	
+	@Override 
+	public void Flatten(ArrayList<ASTNode> list)
+	{
+	}
+	
 	@Override
 	public ArrayList<ASTNode> GetChildren()
 	{

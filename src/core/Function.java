@@ -2,6 +2,8 @@ package core;
 
 import java.util.ArrayList;
 
+import core.Deliminator.DelimType;
+
 /**
  * A function node stores a function with an variable amount of parameters, such as sin or log.
  * 
@@ -33,6 +35,18 @@ public abstract class Function extends ASTNode
 	}
 	
 	
+	/**
+	 * Sets a parameter of the function at the specified index.
+	 * 
+	 * @param index - The index to set.
+	 * @param child - The parameter to set.
+	 */
+	public void SetParameter(int index, ASTNode child)
+	{
+		parameters.set(index, child);
+		child.SetParent(this);
+	}
+	
 	@Override
 	/**
 	 * Recursively solves each parameter of the function, then computes the value of the function.
@@ -46,6 +60,21 @@ public abstract class Function extends ASTNode
 			values[i++] = parameter.Solve();
 		
 		return Compute(values);
+	}
+	
+	@Override
+	/**
+	 * Flattens this node by first adding itself to the list, then recursively flattening each child branch.
+	 */
+	public void Flatten(ArrayList<ASTNode> list)
+	{
+		list.add(this);
+		list.add(new Deliminator(DelimType.open));
+		
+		for(ASTNode parameter : parameters)
+			parameter.Flatten(list);
+		
+		list.add(new Deliminator(DelimType.closed));
 	}
 	
 	@Override

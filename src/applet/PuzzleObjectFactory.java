@@ -1,5 +1,6 @@
 package applet;
 
+import core.Hoop;
 import core.Particle;
 import core.PuzzleElement;
 
@@ -17,6 +18,8 @@ public class PuzzleObjectFactory
 		
 		if (element instanceof Particle)
 			object = new ParticleObject(element);
+		else if (element instanceof Hoop)
+			object = new HoopObject(element);
 		else 
 			throw new IllegalArgumentException("The element type is not regognized.");
 		

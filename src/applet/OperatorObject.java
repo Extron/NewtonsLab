@@ -47,11 +47,18 @@ public class OperatorObject extends ASTNodeObject
 	@Override
 	public void ConnectNode(ASTNodeObject obj, MagnetPoint point)
 	{
+		MagnetPoint actual = point;
+		
+		//This is really the only case we want to deal with.  If the obj has a parent,
+		//then we likely don't want to connect it to this one.
 		if (obj.node.GetParent() == null)
 		{
-			if (point.pos == magnetPoints.get(0).pos)
+			if (magnetPoints.contains(point))
+				actual = point.connector;
+			
+			if (actual.connector == magnetPoints.get(0))
 				((Operator)node).SetLeftNode(obj.node);
-			else if (point.pos == magnetPoints.get(1).pos)
+			else if (actual.connector == magnetPoints.get(1))
 				((Operator)node).SetRightNode(obj.node);
 		}
 		else
