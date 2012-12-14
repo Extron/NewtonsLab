@@ -1,0 +1,12 @@
+Hi!
+
+Welcome to our awesome project.
+
+To view the source java code of the applet itself, just look into the src folder.
+
+For the rails app, just look into the NLab folder 
+Tests: Since you must have rails to run the rspec tests, I've included a folder of pictures showing the tests running. You can find the source code for the tests in the /test folder. The main tests reside in the unit and functionality test folders.
+
+The rails app contains a compiled jar file of the java source code in the public/applet folder. This is how the applet is embedded into the website.
+
+Enjoy!
