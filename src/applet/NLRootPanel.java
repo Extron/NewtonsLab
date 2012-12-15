@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -59,6 +60,11 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 	 */
 	JButton reset;
 	
+	/**
+	 * Display's the puzzle's tip to the user.
+	 */
+	JButton tip;
+	
 	JLabel failed;
 	
 	/**
@@ -69,46 +75,45 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 	/**
 	 * The current score for the puzzle.
 	 */
-	double score;
+	//double score;
 	
 	//This is used to tell the applet that the puzzle is finished
 	boolean finished;
 	JLabel title;
-	String pname, uname, scoreStr;
+	String pname, uname, score;
 	
 	/**
 	 * This is the default constructor for the panel, and it is here where the GUI will be created.
 	 */
-	public NLRootPanel(Applet parent, String p, String u, String s)
+	public NLRootPanel(String p, String u, String s)
 	{
 		pname = p;
 		uname = u;
+		score = s;
 		
+		/*
 		try
 		{
 			score = Double.parseDouble(s);
 		}
-		catch (NumberFormatException ex)
+		catch (Exception ex)
 		{
 			score = 1000;
 		}
-		catch (NullPointerException ex)
-		{
-			score = 1000;
-		}
+		*/
 		
 			
 		currPuzzle = PuzzleFactory.CreatePuzzle(pname);
 		
 		if (currPuzzle == null)
-			currPuzzle = new CannonPuzzle();
+			currPuzzle = new OrbitPuzzle();
 		
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		//Note that a JLabel can have an icon attached to it.  We may want one.
 		//JLabel title = new JLabel("Newton's Lab");
-		title = new JLabel(pname+"    "+uname+"'s Score: "+score);
+		title = new JLabel(pname + "    " + uname + "'s Score: " + score);
 		title.setFont(new Font("Arial", Font.BOLD, 36));
 	
 		
@@ -117,8 +122,8 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 		failed.setForeground(Color.red);
 		failed.setVisible(false);
 
-		puzzle = new PuzzleComponent(parent, currPuzzle);
-		puzzle.SetFailedListener(this);
+		puzzle = new PuzzleComponent(currPuzzle);
+		puzzle.SetStateChangedListener(this);
 		
 		JList functionList = new JList(currPuzzle.GetFunctionParameters().toArray());
 		functionList.addListSelectionListener(this);
@@ -159,10 +164,15 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 		reset.setActionCommand("reset");
 		reset.addActionListener(this);
 		
+		tip = new JButton("View Tip");
+		tip.setActionCommand("show tip");
+		tip.addActionListener(this);
+		
 		add(title);
 		add(mainPane);
 		add(activate);
 		add(reset);
+		add(tip);
 	}
 
 	@Override
@@ -178,14 +188,35 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 			puzzle.ResetPuzzle();
 			activate.setEnabled(true);
 		}
+		else if (e.getActionCommand() == "show tip")
+		{
+			JOptionPane.showMessageDialog(this, currPuzzle.GetTip(), "Tip:", JOptionPane.PLAIN_MESSAGE);
+		}
 		else if (e.getActionCommand() == "failed")
 		{
-			puzzle.DeactivatePuzzle();
-			failed.setVisible(true);
-			activate.setEnabled(true);
-			score -= 100;
-			
-			title.setText(pname + "    " + uname + "'s Score: " + score);
+			if (currPuzzle.IsActive())
+			{
+				puzzle.DeactivatePuzzle();
+				failed.setVisible(true);
+				activate.setEnabled(true);
+				//score -= 100;
+				
+				title.setText(pname + "    " + uname + "'s Score: " + score);
+			}
+		}
+		else if (e.getActionCommand() == "won")
+		{
+			if (currPuzzle.IsActive())
+			{
+				JOptionPane.showMessageDialog(this, "You Won!");
+				
+				puzzle.DeactivatePuzzle();
+				failed.setVisible(true);
+				activate.setEnabled(true);
+				//score += 1000;
+				
+				title.setText(pname + "    " + uname + "'s Score: " + score);
+			}
 		}
 		else if (e.getActionCommand() == "Accept")
 		{
@@ -226,7 +257,7 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 		
 		GridBagLayout layout = new GridBagLayout();
 		
-		String[] opButtons = { "Add", "Subtract", "Multiply", "Divide", "Power", "Square", "Cube" };
+		String[] opButtons = { "Add", "Subtract", "Multiply", "Divide", "Power", "Square", "Cube", "Square Root" };
 		JPanel operatorPanel = new JPanel(layout);
 		
 		for (int i = 0; i < opButtons.length; i++)
@@ -288,32 +319,34 @@ public class NLRootPanel extends JPanel implements ActionListener, ListSelection
 
 		pane.addTab("Values", valuePanel);
 		
-		
-		Iterator<String> iter = puzzle.GetValueParameters().iterator();
-		JPanel parameterPanel = new JPanel(layout);
-		
-		int i = 0;
-		
-		while (iter.hasNext())
+		if (puzzle.GetValueParameters() != null)
 		{
-			String parameter = iter.next();
+			Iterator<String> iter = puzzle.GetValueParameters().iterator();
+			JPanel parameterPanel = new JPanel(layout);
 			
-			JButton button = new JButton(parameter);
-			button.setBackground(Color.orange);
-			button.setActionCommand(parameter);
-			button.addActionListener(astBuilder);
+			int i = 0;
 			
-			GridBagConstraints c = new GridBagConstraints();
-			c.gridx = i % 3;
-			c.gridy = i / 3;
-			c.fill = GridBagConstraints.HORIZONTAL;
+			while (iter.hasNext())
+			{
+				String parameter = iter.next();
+				
+				JButton button = new JButton(parameter);
+				button.setBackground(Color.orange);
+				button.setActionCommand(parameter);
+				button.addActionListener(astBuilder);
+				
+				GridBagConstraints c = new GridBagConstraints();
+				c.gridx = i % 3;
+				c.gridy = i / 3;
+				c.fill = GridBagConstraints.HORIZONTAL;
+				
+				i++;
+				
+				parameterPanel.add(button, c);
+			}
 			
-			i++;
-			
-			parameterPanel.add(button, c);
+			pane.addTab("Parameters", parameterPanel);
 		}
-		
-		pane.addTab("Parameters", parameterPanel);
 		
 		JPanel panel = new JPanel(new GridLayout(1, 4));
 		

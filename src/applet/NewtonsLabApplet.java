@@ -20,14 +20,13 @@ public class NewtonsLabApplet extends JApplet
 	 */
 	public void init()
 	{
-		setSize(800, 800);
+		setSize(900, 700);
 		final String pname = getParameter("pname");
 		final String uname = getParameter("uname");
 		final String score = getParameter("score");
 		//final String pname = "Test Name";
 		//final String uname = "Test User";
 		//final String score = "0";
-		pane = new NLRootPanel(this, pname, uname, score);
 		
 		try 
 		{
@@ -38,6 +37,7 @@ public class NewtonsLabApplet extends JApplet
             SwingUtilities.invokeAndWait(new Runnable() 
             {
                 public void run() {
+                	pane = new NLRootPanel(pname, uname, score);
                 	pane.setOpaque(true); 
                     setContentPane(pane); 
                 }

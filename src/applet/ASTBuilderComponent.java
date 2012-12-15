@@ -223,6 +223,8 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 			node = new Divide(new NullNode(), new NullNode());
 		else if (command.contains("Power"))
 			node = new Power(new NullNode(), new NullNode());
+		else if (command.contains("Square Root"))
+			node = Power.SquareRoot(new NullNode());
 		else if (command.contains("Square"))
 			node = Power.Square(new NullNode());
 		else if (command.contains("Cube"))
@@ -354,6 +356,20 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 		nodeObj.position = new Vector2(x, y);
 		
 		nodes.add(nodeObj);
+
+		if (command == "Square" || command == "Cube" || command == "Square Root")
+		{
+			lastNode = nodes.get(nodes.size() - 1);
+			ASTNode child = node.GetChildren().get(1);
+			
+			ASTNodeObject childObj = ASTObjectFactory.CreateASTObject(child);
+			
+			x = lastNode.GetPosition().x + lastNode.GetSize().width;
+			y = lastNode.GetPosition().y + 0.5 * (lastNode.GetSize().height - childObj.GetSize().height);
+			childObj.position = new Vector2(x, y);
+			
+			nodes.add(childObj);
+		}
 		
 		repaint();
 	}

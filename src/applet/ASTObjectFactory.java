@@ -5,6 +5,7 @@ import core.Deliminator;
 import core.Function;
 import core.NullNode;
 import core.Operator;
+import core.ParameterNode;
 import core.ValueNode;
 
 public class ASTObjectFactory
@@ -25,6 +26,8 @@ public class ASTObjectFactory
 			object = new ValueObject((ValueNode)node);
 		else if (node instanceof Function)
 			object = new FunctionObject((Function)node);
+		else if (node instanceof ParameterNode)
+			object = new ParameterObject((ParameterNode)node);
 		else if (node instanceof Deliminator)
 			object = new DelimObject((Deliminator)node);
 		else if (node instanceof NullNode)

@@ -32,6 +32,12 @@ public abstract class Puzzle
 	protected String backgroundImage;
 	
 	/**
+	 * A tip that users can use to help them solve the puzzle.  These tips will generally
+	 * contain an overview of the physics behind the puzzle.
+	 */
+	protected String tip;
+	
+	/**
 	 * Indicates whether the puzzle is currently simulating or not.
 	 */
 	protected boolean active;
@@ -168,5 +174,17 @@ public abstract class Puzzle
 	public String GetBackgroundImage()
 	{
 		return backgroundImage;
+	}
+
+
+	public boolean IsActive()
+	{
+		return active;
+	}
+
+
+	public String GetTip()
+	{
+		return tip;
 	}
 }

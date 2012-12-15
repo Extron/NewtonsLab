@@ -33,9 +33,9 @@ import core.Vector2;
 public class PuzzleComponent extends JComponent implements MouseInputListener, MouseWheelListener
 {
 	/**
-	 * The listener for teh puzzle failed event.
+	 * The listener for the puzzle state changed event.
 	 */
-	ActionListener failedListener;
+	ActionListener stateChangedListener;
 	
 	/**
 	 * A list of the objects in the puzzle to draw.
@@ -83,13 +83,13 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	 * 
 	 * @param puzzle - The current puzzle to display.
 	 */
-	public PuzzleComponent(Applet applet, Puzzle puzzle)
+	public PuzzleComponent(Puzzle puzzle)
 	{
 		this.puzzle = puzzle;
 		
 		String dir = System.getProperty("user.dir");
 		
-		background = applet.getImage(applet.getCodeBase(), puzzle.GetBackgroundImage());
+		//background = applet.getImage(applet.getCodeBase(), puzzle.GetBackgroundImage());
 		
 		setSize(500, 500);
 		viewport = new Vector2(250, 250);
@@ -201,16 +201,16 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		if (e.getWheelRotation() < 0)
-			scale *= e.getScrollAmount() * 0.25;
+			scale *= e.getScrollAmount() * 0.15;
 		else
-			scale /= e.getScrollAmount() * 0.25;
+			scale /= e.getScrollAmount() * 0.15;
 	
 		repaint();
 	}
 	
-	public void SetFailedListener(ActionListener listener)
+	public void SetStateChangedListener(ActionListener listener)
 	{
-		failedListener = listener;
+		stateChangedListener = listener;
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 		if (puzzle.CanActivate())
 		{
 			puzzle.ActivatePuzzle();
-		
+
 			tick = new PuzzleTickWorker(this);
 			tick.execute();
 		}
@@ -244,7 +244,7 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	{
 		puzzle.DeactivatePuzzle();
 	
-		tick.cancel(false);
+		tick.cancel(true);
 		
 		repaint();
 	}
@@ -254,8 +254,16 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 	 */
 	public void ResetPuzzle()
 	{
-		tick.cancel(false);
+		if (tick != null)
+			tick.cancel(true);
+		
 		puzzle.ResetPuzzle();
+		
+		int w = getWidth() - getInsets().left - getInsets().right;
+		int h = getHeight() - getInsets().top - getInsets().bottom;
+		
+		viewport.x = w / 2.0;
+		viewport.y = h / 2.0;
 		
 		repaint();
 	}
@@ -268,7 +276,9 @@ public class PuzzleComponent extends JComponent implements MouseInputListener, M
 		puzzle.Tick(dt);
 		
 		if (puzzle.HasFailed())
-			failedListener.actionPerformed(new ActionEvent(this, 0, "failed"));
+			stateChangedListener.actionPerformed(new ActionEvent(this, 0, "failed"));
+		else if (puzzle.HasWon())
+			stateChangedListener.actionPerformed(new ActionEvent(this, 0, "won"));
 	}
 	
 	/**

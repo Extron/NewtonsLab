@@ -29,6 +29,19 @@ public final class Power extends Operator
 	}
 	
 	/**
+	 * Creates a square root operation.
+	 * 
+	 * @param node - The node to take the root of.
+	 * @return Returns the square root operator node.
+	 */
+	public static ASTNode SquareRoot(ASTNode node)
+	{
+		ASTNode squareRoot = new Power(node, new ValueNode(0.5));
+		squareRoot.name = "Square Root";
+		return squareRoot;
+	}
+	
+	/**
 	 * Creates a exponentiation operation.
 	 * 
 	 * @param node - The node to raise e to.

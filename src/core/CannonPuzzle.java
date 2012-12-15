@@ -31,7 +31,7 @@ public class CannonPuzzle extends Puzzle
 	public void InitializePuzzle()
 	{
 		cannonBall = new Particle(this);
-		hoop = new Hoop(new Vector2(10000, -1000), new Vector2(10000, -900));
+		hoop = new Hoop(new Vector2(10000, -1100), new Vector2(10000, -900));
 		
 		gravity.Scale(5e-8);
 		
@@ -48,6 +48,8 @@ public class CannonPuzzle extends Puzzle
 	{
 		cannonBall.SetPosition(new Vector2(0, 0));
 		cannonBall.SetMomentum(new Vector2(0, 0));
+		
+		oldPos = new Vector2(0, 0);
 	}
 
 	@Override
@@ -99,7 +101,7 @@ public class CannonPuzzle extends Puzzle
 	@Override
 	public boolean CanActivate()
 	{
-		return GetFunction("Cannon Angle") != null && GetFunction("Initial Velocity") != null;
+		return GetFunction("Cannon Angle") != null && GetFunction("Initial Velocity") != null && !active;
 	}
 
 	@Override

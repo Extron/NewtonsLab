@@ -38,6 +38,16 @@ public final class ParameterNode extends ASTNode
 	}
 	
 	
+	/**
+	 * Gets the value of the parameter.
+	 * 
+	 * @return Returns the value.
+	 */
+	public double GetValue()
+	{
+		return puzzle.GetParameter(parameter);
+	}
+	
 	@Override
 	/**
 	 * Returns the current value of the parameter of the puzzle.
