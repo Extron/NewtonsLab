@@ -21,12 +21,12 @@ public class NewtonsLabApplet extends JApplet
 	public void init()
 	{
 		setSize(900, 700);
-		final String pname = getParameter("pname");
-		final String uname = getParameter("uname");
-		final String score = getParameter("score");
-		//final String pname = "Test Name";
-		//final String uname = "Test User";
-		//final String score = "0";
+		//final String pname = getParameter("pname");
+		//final String uname = getParameter("uname");
+		//final String score = getParameter("score");
+		final String pname = "Test Name";
+		final String uname = "Test User";
+		final String score = "0";
 		
 		try 
 		{

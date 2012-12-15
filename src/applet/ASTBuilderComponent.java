@@ -329,7 +329,17 @@ public class ASTBuilderComponent extends JComponent implements MouseInputListene
 			else
 			{
 				if (!(lastNode.node instanceof ValueNode) && !(lastNode.node instanceof ParameterNode))
-					return;
+				{
+					if (lastNode.node instanceof Deliminator)
+					{
+						if (((Deliminator)lastNode.node).GetType() != DelimType.closed)
+							return;
+					}
+					else
+					{
+						return;
+					}
+				}
 				
 				int count = 0;
 				

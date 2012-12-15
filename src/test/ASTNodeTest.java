@@ -159,6 +159,63 @@ public class ASTNodeTest
 	}
 	
 	@Test
+	public void testFlatten()
+	{
+		ASTNode root = new Add(new ValueNode(1.0), new ValueNode(2.0));
+		ArrayList<ASTNode> list = new ArrayList<ASTNode>();
+		
+		root.Flatten(list);
+		
+		assertTrue(list.get(0) instanceof Deliminator);
+		assertTrue(list.get(1) instanceof ValueNode);
+		assertTrue(list.get(2) instanceof Add);
+		assertTrue(list.get(3) instanceof ValueNode);
+		assertTrue(list.get(4) instanceof Deliminator);
+		
+		assertEquals(((ValueNode)list.get(1)).GetValue(), 1.0, 0.00001);
+		assertEquals(((ValueNode)list.get(3)).GetValue(), 2.0, 0.00001);
+		
+		root = new Add(new Multiply(new ValueNode(1.0), new ValueNode(2.0)), new ValueNode(3.0));
+		
+		list.clear();
+		
+		root.Flatten(list);
+		
+		assertTrue(list.get(0) instanceof Deliminator);
+		assertTrue(list.get(1) instanceof Deliminator);
+		assertTrue(list.get(2) instanceof ValueNode);
+		assertTrue(list.get(3) instanceof Multiply);
+		assertTrue(list.get(4) instanceof ValueNode);
+		assertTrue(list.get(5) instanceof Deliminator);
+		assertTrue(list.get(6) instanceof Add);
+		assertTrue(list.get(7) instanceof ValueNode);
+		assertTrue(list.get(8) instanceof Deliminator);
+		
+		assertEquals(((ValueNode)list.get(2)).GetValue(), 1.0, 0.00001);
+		assertEquals(((ValueNode)list.get(4)).GetValue(), 2.0, 0.00001);
+		assertEquals(((ValueNode)list.get(7)).GetValue(), 3.0, 0.00001);
+		
+		
+		root = new Sine(new Multiply(new ValueNode(1.0), new ValueNode(2.0)));
+		
+		list.clear();
+		
+		root.Flatten(list);
+		
+		assertTrue(list.get(0) instanceof Sine);
+		assertTrue(list.get(1) instanceof Deliminator);
+		assertTrue(list.get(2) instanceof Deliminator);
+		assertTrue(list.get(3) instanceof ValueNode);
+		assertTrue(list.get(4) instanceof Multiply);
+		assertTrue(list.get(5) instanceof ValueNode);
+		assertTrue(list.get(6) instanceof Deliminator);
+		assertTrue(list.get(7) instanceof Deliminator);
+		
+		assertEquals(((ValueNode)list.get(3)).GetValue(), 1.0, 0.00001);
+		assertEquals(((ValueNode)list.get(5)).GetValue(), 2.0, 0.00001);
+	}
+	
+	@Test
 	public void testBuildTree()
 	{
 		ArrayList<ASTNode> list = new ArrayList<ASTNode>();

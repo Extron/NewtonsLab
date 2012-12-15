@@ -60,7 +60,12 @@ public final class Vector2
 	 */
 	public static Vector2 Normalized(Vector2 v)
 	{
-		return Scale(v, 1 / v.Length());
+		double l = v.Length();
+		
+		if (l > 0)
+			return Scale(v, 1 / v.Length());
+		
+		return new Vector2(0, 0);
 	}
 	
 	/**
@@ -186,8 +191,18 @@ public final class Vector2
 	 */
 	public void Normalize()
 	{
-		x *= Length();
-		y *= Length();
+		double l = Length();
+		
+		if (l > 0)
+		{
+			x /= l;
+			y /= l;
+		}
+		else
+		{
+			x = 0;
+			y = 0;
+		}
 	}
 	
 	/**

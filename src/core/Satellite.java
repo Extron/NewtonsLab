@@ -107,6 +107,6 @@ public class Satellite implements PuzzleElement
 		
 		Vector2 accel = Vector2.Scale(Vector2.Negative(Vector2.Normalized(position)), 1 / r);
 		momentum.Add(Vector2.Scale(accel, dt * mass));
-		position.Add(Vector2.Scale(momentum, dt));
+		position.Add(Vector2.Scale(momentum, dt / mass));
 	}
 }

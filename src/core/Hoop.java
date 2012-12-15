@@ -62,9 +62,9 @@ public class Hoop implements PuzzleElement
 			else if (Vector2.Distance(p, topPos) > Vector2.Distance(topPos, bottomPos))
 				return false;
 			
-			if (Vector2.Dot(Vector2.Subtract(pos2, p), Vector2.Subtract(pos2, pos1)) < 0)
+			if (Vector2.Dot(Vector2.Subtract(p, pos1), Vector2.Subtract(pos2, pos1)) < 0)
 				return false;
-			else if (Vector2.Dot(Vector2.Subtract(bottomPos, p), Vector2.Subtract(bottomPos, topPos)) < 0)
+			else if (Vector2.Dot(Vector2.Subtract(p, topPos), Vector2.Subtract(bottomPos, topPos)) < 0)
 				return false;
 			
 			return true;

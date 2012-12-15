@@ -128,7 +128,7 @@ public class Particle implements PuzzleElement
 		//For now, this uses an Euler DE solver, but for more accurate solutions,
 		//it would be better to use the Runge-Kutta DE solver.
 		momentum.Add(Vector2.Scale(parent.GetGravity(), dt * mass));
-		position.Add(Vector2.Scale(momentum, dt));
+		position.Add(Vector2.Scale(momentum, dt / mass));
 	}
 	
 	/**
